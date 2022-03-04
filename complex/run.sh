@@ -1,25 +1,26 @@
-./make.sh
-./test 1000
-./test 5000
-./test 10000
-./test 50000
-./test 100000
-./test 200000
-./test 300000
-./test 400000
-./test 500000
-./test 600000
-./test 700000
-./test 800000
-./test 900000
-./test 1000000
-./test 3000000
-./test 5000000
-./test 7000000
-./test 10000000
-./test 30000000
-./test 50000000
-./test 70000000
-./test 90000000
-./test 100000000
+g++ -O3 complex_vector.cpp -o complextest_O3.bin
+
+./complextest_O3.bin 1000
+./complextest_O3.bin 5000
+./complextest_O3.bin 10000
+./complextest_O3.bin 50000
+./complextest_O3.bin 100000
+./complextest_O3.bin 200000
+./complextest_O3.bin 300000
+./complextest_O3.bin 400000
+./complextest_O3.bin 500000
+./complextest_O3.bin 600000
+./complextest_O3.bin 700000
+./complextest_O3.bin 800000
+./complextest_O3.bin 900000
+./complextest_O3.bin 1000000
+./complextest_O3.bin 3000000
+./complextest_O3.bin 5000000
+./complextest_O3.bin 7000000
+./complextest_O3.bin 10000000
+./complextest_O3.bin 30000000
+./complextest_O3.bin 50000000
+./complextest_O3.bin 70000000
+./complextest_O3.bin 90000000
+./complextest_O3.bin 100000000
 # ./test 1200000000

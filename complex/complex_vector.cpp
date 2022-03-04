@@ -28,6 +28,8 @@ double vmul_Vec2D(double *const &B, double *const &x, int SIZE);
 double vmul_2VecD(double *const &B, double *const &x, int SIZE);
 double vmul_2VecDTmp(double *const &B, double *const &x, int SIZE);
 
+double *TMP; 
+
 int main(int argc, char **argv)
 {
     int SIZE = 0;
@@ -64,6 +66,8 @@ int main(int argc, char **argv)
         // xB[SIZE + i] = (double)(i - SIZE);
     }
 
+    TMP= new double[SIZE * 2];
+
     double timeuse = 0;
     struct timeval start;
     struct timeval end;
@@ -94,7 +98,7 @@ int main(int argc, char **argv)
     delete[] A;
     // delete[] B;
     // delete[] C;
-
+    delete[] TMP;
     return 0;
 }
 
@@ -166,7 +170,7 @@ double vmul_2VecDTmp(double *const &B, double *const &x, int SIZE)
     struct timeval start;
     struct timeval end;
     gettimeofday(&start, NULL);
-    double *tmp = new double[SIZE * 2];
+    double *tmp = TMP;
     double *tmpim = tmp + SIZE;
     double *Bim = B + SIZE;
     double *xim = x + SIZE;
@@ -200,7 +204,6 @@ double vmul_2VecDTmp(double *const &B, double *const &x, int SIZE)
     {
         B[i] = tmp[i];
     }
-    delete[] tmp;
     gettimeofday(&end, NULL);
     timeuse = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
     return timeuse;
