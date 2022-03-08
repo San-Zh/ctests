@@ -3,8 +3,10 @@ from os import system
 import sys
 
 system('rm *.bin log_O3 log_normal -rf')
-system('g++ -g complex_vector.cpp -o complextest_normal.bin')
-system('g++ -g -O3 complex_vector.cpp -o complextest_O3.bin')
+system('g++ -O0 complex_vector.cpp -o complextest_normal.bin')
+system('g++ -O3 complex_vector.cpp -o complextest_O3.bin')
+
+
 
 Vlen = 100
 for Log in range(2, 6):
