@@ -14,7 +14,7 @@ system('g++ -O3 complex_vector.cpp -o complextest_O3.bin')
 
 
 Vlen = 100
-for Log in range(2, 6):
+for Log in range(2, 7):
     Vlen *= 10
     for n in range(1, 10):
         NVlen = Vlen * n

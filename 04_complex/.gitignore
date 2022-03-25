@@ -1,4 +1,3 @@
 *.o
-*log
 test
 .vscode*
