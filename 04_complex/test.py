@@ -1,8 +1,13 @@
-from subprocess import call
+# from subprocess import call
 from os import system
 import sys
 
-system('rm *.bin log_O3 log_normal -rf')
+cluster = "kunpeng"
+
+log_nrml = "{0}_log_normal".format(cluster)
+log_O3 = "{0}_log_O3".format(cluster)
+
+system('rm *.bin *_log_* -rf')
 system('g++ -O0 complex_vector.cpp -o complextest_normal.bin')
 system('g++ -O3 complex_vector.cpp -o complextest_O3.bin')
 
@@ -14,11 +19,11 @@ for Log in range(2, 6):
     for n in range(1, 10):
         NVlen = Vlen * n
         
-        RunCmdNormal = f"./complextest_normal.bin {NVlen} >> log_normal"
+        RunCmdNormal = "./complextest_normal.bin {0} >> {1}".format(NVlen, log_nrml)
         print(RunCmdNormal)
         system(RunCmdNormal)
 
-        RunCmdO3 = f"./complextest_O3.bin     {NVlen} >> log_O3"
+        RunCmdO3 = "./complextest_O3.bin     {0} >> {1}".format(NVlen, log_O3)
         print(RunCmdO3)
         system(RunCmdO3)
 
