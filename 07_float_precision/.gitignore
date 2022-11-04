@@ -1,0 +1,5 @@
+*.out
+log
+*.vect
+*.log
+
