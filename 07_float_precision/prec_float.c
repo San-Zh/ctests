@@ -29,7 +29,6 @@ int main(int argc, char **argv)
 
     double *A = (double *) malloc(SIZE * 2 * sizeof(double));
     float *AF = (float *) malloc(SIZE * 2 * sizeof(float));
-    memset(AF, 0, SIZE * 2 * sizeof(float));
     // ComplexD *C = (ComplexD *) A;
     // ComplexF *CF = (ComplexF *) AF;
     srand(0);
@@ -40,6 +39,8 @@ int main(int argc, char **argv)
     for (int i = 0; i < SIZE * 2; i++) {
         *(AF + i) = (float) (rand()) / (RAND_MAX + 1.0);
     }
+    // double *AFF = (double *) malloc(SIZE * sizeof(double));
+    // memcpy(AFF, AF, SIZE * sizeof(double));
 
     double renomalize = (double) (1.0 / (SIZE * LOOP));
     // double precision
@@ -66,7 +67,7 @@ int main(int argc, char **argv)
             nrm2F += norm2F(AF, SIZE * 2) * renomalize;
             gettimeofday(&endF, NULL);
             timeuseF += (endF.tv_sec - startF.tv_sec) * 1000000 + (endF.tv_usec - startF.tv_usec);
-            printf("Norm2 <single> time: %10.5f, nrm2F=%11.8f, acc=%6.3lf\n\n", timeuseF, nrm2F,
+            printf("Norm2 <single> time: %10.5f us, nrm2F=%11.8f, acc=%6.3lf\n\n", timeuseF, nrm2F,
                    timeuseD / timeuseF);
         }
     }

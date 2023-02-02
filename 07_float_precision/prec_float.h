@@ -25,6 +25,22 @@ float norm2F(float *x, int Size)
     return nrm;
 }
 
+void axbD(double *x, double *y, int Size)
+{
+    double nrm = 0.0;
+    for (int i = 0; i < Size; i++) {
+        x[i] = x[i] * y[i];
+    }
+}
+
+void axbF(float *x, float *y, int Size)
+{
+    double nrm = 0.0;
+    for (int i = 0; i < Size; i++) {
+        x[i] = x[i] * y[i];
+    }
+}
+
 // double norm2CD(ComplexD *x, int Size)
 // {
 //     double nrm = 0;
