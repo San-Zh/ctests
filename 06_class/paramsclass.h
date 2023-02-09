@@ -17,11 +17,11 @@ class SolverParams {
   public:
     double residual = 1.0e-9;
     SolverParams() = default;
-    virtual ~SolverParams();
+    virtual ~SolverParams() {}
 
   public:
-    virtual void setparama();
-    virtual void getparams();
+    virtual void setparama() {}
+    virtual void getparams() {}
 };
 
 class CGParams : public SolverParams {
@@ -30,7 +30,7 @@ class CGParams : public SolverParams {
     using SolverParams::residual;
     int MaxIter;
     CGParams() = default;
-    ~CGParams(){};
+    ~CGParams() = default;
 
   public:
     void setparams(int _MaxIter, double _rsd) { MaxIter = _MaxIter, residual = _rsd; }
@@ -43,7 +43,7 @@ class BiCGParams : public SolverParams {
     using SolverParams::residual;
     int MaxIter;
     BiCGParams() = default;
-    ~BiCGParams(){};
+    ~BiCGParams() = default;
 
   public:
     void setparams(int _MaxIter, double _rsd) { MaxIter = _MaxIter, residual = _rsd; }

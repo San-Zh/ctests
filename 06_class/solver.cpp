@@ -11,16 +11,14 @@
 
 int main(int argc, int **argv)
 {
-    std::map<std::string, Func_ptr_solver> SolverMap;
-    SolverMap["CGSolver"] = CGSolver;
+    // std::map<std::string, Func_ptr_solver> SolverMap;
+    // SolverMap["CGSolver"] = CGSolver;
 
-    SolverParams *P;
+    CGParams *P;
 
     P = new CGParams();
     double *src, *des;
-    // Solver<zgemm>(des, src, cgpar, CGSolver);
-    Solver(des, src, P, zgemm, &CGSolver);
-    // Solver(des, src, cgpar, zgemm, BiCGSolver);
+    Solver<CGParams>(des, src, *P, zgemm, CGSolver);
 
     printf("Done\n");
 
