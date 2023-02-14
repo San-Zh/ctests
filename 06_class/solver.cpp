@@ -1,26 +1,21 @@
-/**
- * @brief 
- * 
- * @param des 
- * @param src 
- */
-#include "paramsclass.h"
-#include "solverptr.h"
-#include <string>
-#include <map>
 
-int main(int argc, int **argv)
+#include "solver.h"
+
+void zgemm(double *des, double *src)
 {
-    // std::map<std::string, Func_ptr_solver> SolverMap;
-    // SolverMap["CGSolver"] = CGSolver;
+    printf("zgemm(): Y=AX\n");
+}
 
-    CGParams *P;
+int CGSolver(double *des, double *src, Func_ptr_Ax Ax, const CGParams &CGParams)
+{
+    Ax(des, src);
+    printf("CG solver done\n");
+    return EXIT_SUCCESS;
+}
 
-    P = new CGParams();
-    double *src, *des;
-    Solver<CGParams>(des, src, *P, zgemm, CGSolver);
-
-    printf("Done\n");
-
+int BiCGSolver(double *des, double *src, Func_ptr_Ax Ax, const BiCGParams &BiCGParams)
+{
+    Ax(des, src);
+    printf("BiCG solver done\n");
     return EXIT_SUCCESS;
 }

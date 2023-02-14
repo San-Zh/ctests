@@ -12,16 +12,23 @@
 #include <iostream>
 #include <cstdio>
 
+typedef struct _CG_params {
+    int MaxIterNum;
+    double TargetPrec;
+} CGSolverParams;
+
+using BICGSolverParams = CGSolverParams;
+
 class SolverParams {
   private:
   public:
     double residual = 1.0e-9;
-    SolverParams() = default;
-    virtual ~SolverParams() {}
+    SolverParams(){};
+    virtual ~SolverParams(){};
 
   public:
-    virtual void setparama() {}
-    virtual void getparams() {}
+    // virtual void setparams() = 0;
+    // virtual void getparams() = 0;
 };
 
 class CGParams : public SolverParams {
@@ -30,7 +37,7 @@ class CGParams : public SolverParams {
     using SolverParams::residual;
     int MaxIter;
     CGParams() = default;
-    ~CGParams() = default;
+    ~CGParams() { printf("CGParams destroy\n"); }
 
   public:
     void setparams(int _MaxIter, double _rsd) { MaxIter = _MaxIter, residual = _rsd; }
@@ -43,7 +50,7 @@ class BiCGParams : public SolverParams {
     using SolverParams::residual;
     int MaxIter;
     BiCGParams() = default;
-    ~BiCGParams() = default;
+    ~BiCGParams() { printf("BiCGParams destroy\n"); }
 
   public:
     void setparams(int _MaxIter, double _rsd) { MaxIter = _MaxIter, residual = _rsd; }
