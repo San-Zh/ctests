@@ -70,8 +70,7 @@ int main(int argc, char **argv)
     timeuse1 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
 
     /* */
-    printf("Time Use(ms): %14.3lf %14.3lf   %14.2lf\n", timeuse0, timeuse1,
-           (timeuse0 - timeuse1) / timeuse0);
+    printf("Time Use(ms): %14.3lf %14.3lf   %14.2lf\n", timeuse0, timeuse1, timeuse0 / timeuse1);
 
     /* */
     FLOAT resd = 0.0;
