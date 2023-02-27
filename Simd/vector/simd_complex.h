@@ -1,5 +1,5 @@
-#ifndef _SIMD_COMPLEX_HPP
-#define _SIMD_COMPLEX_HPP
+#ifndef _SIMD_COMPLEX_H
+#define _SIMD_COMPLEX_H
 
 // #include <immintrin.h>
 #include <x86intrin.h>

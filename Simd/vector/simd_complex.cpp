@@ -3,7 +3,7 @@
 #include <iostream>
 #include <complex>
 #include <random>
-#include "simd_complex.hpp"
+#include "simd_complex.h"
 
 // #define SINGLE_PREC
 

@@ -16,7 +16,7 @@ using Complex = std::complex<FLOAT>;
 
 #ifdef SIMD256
 
-#if defined SINGLE_PREC
+#ifdef SINGLE_PREC
 #define SimdVecF __m256
 #define FSIMD_SIZE 8
 #define EO_SWITCH_256 0b10110001
@@ -49,9 +49,9 @@ using Complex = std::complex<FLOAT>;
 #endif
 
 /**
- * @brief nomal y = A x;
+ * @brief nomal matrix muliply vector, y = A x;
  * 
- * @tparam T 
+ * @tparam T data type with add and mul OP defined: complex<>, double, float, int 
  * @param y des vector
  * @param A Matrix, Row major;
  * @param x src vector, x[i * Row + row]
@@ -60,7 +60,7 @@ using Complex = std::complex<FLOAT>;
  * @param GridSize Grid Size
  */
 template <typename T>
-void gemv(T *y, T *A, T *x, const int &Col, const int &Row, const int &GridSize)
+void gemv(T *y, const T *A, const T *x, const int &Col, const int &Row, const int &GridSize)
 {
     for (size_t i = 0; i < GridSize; i++) {
         for (size_t c = 0; c < Col; c++) {
@@ -71,61 +71,76 @@ void gemv(T *y, T *A, T *x, const int &Col, const int &Row, const int &GridSize)
     }
 }
 
-void simdGemv(FLOAT *y, FLOAT *A, FLOAT *x, const int &Col, const int &Row, const int &GridSize)
-{
-    SimdGatherIndex midx;
-#ifdef SINGLE_PREC
-    midx = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
-    const int Scale = sizeof(FLOAT);
-#else
-    midx = _mm_setr_epi32(0, 1, 2, 3);
-    const int Scale = sizeof(FLOAT);
-#endif
+/**
+ * @brief Simd Gemv, double or float data in normal order; so i32Gather/Scatter used.
+ * 
+ * @param y 
+ * @param A 
+ * @param x 
+ * @param Col 
+ * @param Row 
+ * @param GridSize 
+ */
+// void simdGemv(FLOAT *y, FLOAT *A, FLOAT *x, const int &Col, const int &Row, const int &GridSize)
+// {
+//     SimdGatherIndex midx;
+// #ifdef SINGLE_PREC
+//     midx = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+//     const int Scale = sizeof(FLOAT);
+// #else
+//     midx = _mm_setr_epi32(0, 1, 2, 3);
+//     const int Scale = sizeof(FLOAT);
+// #endif
 
-    SimdVecF acr, vr, vc;
-    for (size_t i = 0; i < GridSize; i += FSIMD_SIZE) {
-        for (size_t c = 0; c < Col; c++) {
-            vc = Fsimd_setzero();
-            for (size_t r = 0; r < Row; r++) {
-                acr = Fsimd_i32gather((A + i * Col * Row + c * Row + r), midx * Col * Row, Scale);
-                vr = Fsimd_i32gather((x + i * Row + r), midx * Row, Scale);
-                vc = Fsimd_fmadd(acr, vr, vc);
-            }
-            Fsimd_i32scatter((y + i * Col + c), midx * Col, vc, Scale); // -mavx512vl
-        }
-    }
+//     SimdVecF acr, vr, vc;
+//     for (size_t i = 0; i < GridSize; i += FSIMD_SIZE) {
+//         for (size_t c = 0; c < Col; c++) {
+//             vc = Fsimd_setzero();
+//             for (size_t r = 0; r < Row; r++) {
+//                 acr = Fsimd_i32gather((A + i * Col * Row + c * Row + r), midx * Col * Row, Scale);
+//                 vr = Fsimd_i32gather((x + i * Row + r), midx * Row, Scale);
+//                 vc = Fsimd_fmadd(acr, vr, vc);
+//             }
+//             Fsimd_i32scatter((y + i * Col + c), midx * Col, vc, Scale); // -mavx512vl
+//         }
+//     }
+// }
 
-    // SimdVecF acr, vr[Row], vc; // vc[Col];
-    // for (size_t i = 0; i < GridSize; i += FSIMD_SIZE) {
-    //     for (size_t r = 0; r < Row; r++) {
-    //         vr[r] = Fsimd_i32gather((x + i * Row + r), midx * Row, Scale);
-    //     }
-    //     for (size_t c = 0; c < Col; c++) {
-    //         // acr = Fsimd_i32gather((A + i * Col * Row + c * Row + 0), midx * Col * Row, Scale);
-    //         // vr[0] = Fsimd_i32gather((x + i * Row + 0), midx * Row, Scale);
-    //         // // vc[c] = _mm256_mul_pd(acr, vr[0]);
-    //         // vc = _mm256_mul_pd(acr, vr[0]);
-    //         vc = Fsimd_setzero();
-    //         for (size_t r = 0; r < Row; r++) {
-    //             // a[c][r] = Fsimd_i32gather(Mi + c * Row + r, midx * Col * Row, FSIMD_SIZE);
-    //             acr = Fsimd_i32gather((A + i * Col * Row + c * Row + r), midx * Col * Row,
-    //                                   Scale);
-    //             vr[r] = Fsimd_i32gather((x + i * Row + r), midx * Row, Scale);
-    //             // vc[c] = Fsimd_fmadd(acr, vr[r], vc[c]);
-    //             vc = Fsimd_fmadd(acr, vr[r], vc);
-    //         }
-    //         Fsimd_i32scatter((y + i * Col + c), midx * Col, vc, Scale); // -mavx512vl
-    //     }
-    //     // for (size_t c = 0; c < Col; c++) {
-    //     //     Fsimd_i32scatter((y + i * Col + c), midx * Col, vc[c], Scale); // -mavx512vl
-    //     // }
-    // }
-}
+// void simdGemv01(FLOAT *y, FLOAT *A, FLOAT *x, const int &Col, const int &Row, const int &GridSize)
+// {
+//     SimdGatherIndex midx;
+// #ifdef SINGLE_PREC
+//     midx = _mm256_setr_epi32(0, 1, 2, 3, 4, 5, 6, 7);
+//     const int Scale = sizeof(FLOAT);
+// #else
+//     midx = _mm_setr_epi32(0, 1, 2, 3);
+//     const int Scale = sizeof(FLOAT);
+// #endif
+//     SimdVecF mac[Row], vr[Row], vc; // vc[Col];
+//     for (size_t i = 0; i < GridSize; i += FSIMD_SIZE) {
+//         for (size_t r = 0; r < Row; r++) {
+//             vr[r] = Fsimd_i32gather((x + i * Row + r), midx * Row, Scale);
+//         }
+//         for (size_t c = 0; c < Col; c++) {
+//         }
+//         for (size_t c = 0; c < Col; c++) {
+//             for (size_t r = 0; r < Row; r++) {
+//                 mac[r] =
+//                     Fsimd_i32gather((A + i * Col * Row + c * Row + r), midx * Col * Row, Scale);
+//             }
+//             vc = Fsimd_setzero();
+//             for (size_t r = 0; r < Row; r++) {
+//                 vc = Fsimd_fmadd(mac[r], vr[r], vc);
+//             }
+//             Fsimd_i32scatter((y + i * Col + c), midx * Col, vc, Scale); // -mavx512vl
+//         }
+//     }
+// }
 
 /**
- * @brief Tensor Grid gemv
+ * @brief Tensor Grid Gemv; normal mul, and grid-loop inside 
  * 
- * @tparam T basic data type: complex, double, float, int 
+ * @tparam T basic data type: complex<>, double, float, int 
  * @param y y[col * GridSize + i], i=[0:GridSize); initialized result vector
  * @param A A[(col * Row + raw) * GridSize + i]
  * @param x x[row * GridSize + i]
@@ -159,6 +174,17 @@ void TG_gemv(T *y, T *A, T *x, const int &Col, const int &Row, const int &GridSi
     }
 }
 
+/**
+ * @brief Tensor Grid Simd Gemv; simd for grid-loop first  
+ * 
+ * @tparam T 
+ * @param y 
+ * @param A 
+ * @param x 
+ * @param Col 
+ * @param Row 
+ * @param GridSize 
+ */
 template <typename T>
 void TG_simdGemv(T *y, T *A, T *x, const int &Col, const int &Row, const int &GridSize)
 {
@@ -176,24 +202,22 @@ void TG_simdGemv(T *y, T *A, T *x, const int &Col, const int &Row, const int &Gr
     for (size_t c = 0; c < Col; c++) {
         yc[c] = y + GridSize * c;
     }
-    SimdVecF vx[Row], acr;
-    for (size_t i = 0; i < GridSize; i += FSIMD_SIZE) {
+    SimdVecF vx, vy, acr;
+    for (size_t c = 0; c < Col; c++) {
         for (size_t r = 0; r < Row; r++) {
-            vx[r] = Fsimd_load(xr[r] + i);
-        }
-        for (size_t c = 0; c < Col; c++) {
-            SimdVecF vy = Fsimd_setzero();
-            for (size_t r = 0; r < Row; r++) {
+            for (size_t i = 0; i < GridSize; i += FSIMD_SIZE) {
+                vx = Fsimd_load(xr[r] + i);
+                vy = Fsimd_load(yc[c] + i);
                 acr = Fsimd_load(Acr[c * Row + r] + i);
-                vy = Fsimd_fmadd(acr, vx[r], vy);
+                vy = Fsimd_fmadd(acr, vx, vy);
+                Fsimd_store(yc[c] + i, vy);
             }
-            Fsimd_store(yc[c] + i, vy);
         }
     }
 }
 
 /**
- * @brief Tensor Grid gemv method2: 
+ * @brief Tensor Grid gemv: TensorGrid Data; tensor op first, and grid-loop outsite 
  * 
  * @tparam T basic data type: complex, double, float, int 
  * @param y y[col * GridSize + i], i=[0:GridSize); initialized result vector
@@ -230,8 +254,52 @@ void TG_gemv01(T *y, T *A, T *x, const int &Col, const int &Row, const int &Grid
     }
 }
 
+/**
+ * @brief Tensor Grid Simd Gemv: TensorGrid Data; tensor simd-OP first, and grid-loop outsite 
+ * 
+ * @tparam T basic data type: complex, double, float, int 
+ * @param y y[col * GridSize + i], i=[0:GridSize); initialized result vector
+ * @param A A[(col * Row + raw) * GridSize + i]
+ * @param x x[row * GridSize + i]
+ * @param Col Tesnor col size
+ * @param Row Tensor row size
+ * @param GridSize 
+ */
 template <typename T>
-void CTG_gemv1(T *y, T *A, T *x, const int &Col, const int &Row, const int &GridSize)
+void TG_simdGemv01(T *y, T *A, T *x, const int &Col, const int &Row, const int &GridSize)
+{
+    T *Acr[Col * Row], *xr[Row], *yc[Col];
+    for (size_t c = 0; c < Col; c++) {
+        for (size_t r = 0; r < Row; r++) {
+            Acr[c * Row + r] = A + GridSize * (c * Row + r);
+        }
+    }
+
+    for (size_t r = 0; r < Row; r++) {
+        xr[r] = x + GridSize * r;
+    }
+
+    for (size_t c = 0; c < Col; c++) {
+        yc[c] = y + GridSize * c;
+    }
+    SimdVecF vx[Row], acr;
+    for (size_t i = 0; i < GridSize; i += FSIMD_SIZE) {
+        for (size_t r = 0; r < Row; r++) {
+            vx[r] = Fsimd_load(xr[r] + i);
+        }
+        for (size_t c = 0; c < Col; c++) {
+            SimdVecF vy = Fsimd_setzero();
+            for (size_t r = 0; r < Row; r++) {
+                acr = Fsimd_load(Acr[c * Row + r] + i);
+                vy = Fsimd_fmadd(acr, vx[r], vy);
+            }
+            Fsimd_store(yc[c] + i, vy);
+        }
+    }
+}
+
+template <typename T>
+void CTG_gemv(T *y, T *A, T *x, const int &Col, const int &Row, const int &GridSize)
 {
     T *Mcr[Col * Row], *xr[Row], *yc[Col];
     for (size_t c = 0; c < Col; c++) {
