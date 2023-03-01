@@ -11,7 +11,6 @@
 #define SIZE 8
 #endif
 
-
 // using std::default_random_engine;
 // default_random_engine rng;
 // rng.seed(time(0));
@@ -101,8 +100,8 @@ int main(int argc, char **argv)
 #endif
     gettimeofday(&end, NULL);
     double timeuse2 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
-    printf("method 02 rrii  : %14.3lf %14.3lf %9.2lf %14.3e\n", timeref, timeuse2, timeref / timeuse2,
-           resd(Fc, Fd));
+    printf("method 02 rrii  : %14.3lf %14.3lf %9.2lf %14.3e\n", timeref, timeuse2,
+           timeref / timeuse2, resd(Fc, Fd));
     checkValue(Vc, Vd);
 
     /* Simd method 03 */
@@ -146,4 +145,3 @@ void checkValue(Complex *A, Complex *B)
         }
     }
 }
-

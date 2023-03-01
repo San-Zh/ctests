@@ -1,5 +1,15 @@
+/**
+ * @file matrix.cpp
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2023-02-28
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #include <sys/time.h>
-#include <cstdio>
+#include <stdio.h>
 #include <iostream>
 #include <complex>
 #include <string.h>
@@ -103,23 +113,23 @@ int main(int argc, char **argv)
     double timeref = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
     printftime(gemv, timeref, Z, Z);
 
-    // /// simdGemv
-    // memset(Y, 0, COLUMN * SIZE * sizeof(FLOAT));
-    // gettimeofday(&start, NULL);
-    // simdGemv(Y, A, X, COLUMN, ROW, SIZE);
-    // gettimeofday(&end, NULL);
-    // double simdtime00 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
-    // printftime(simdGemv, simdtime00, Z, Y);
-    // checkValue(Z, Y);
+    /// simdGemv
+    memset(Y, 0, COLUMN * SIZE * sizeof(FLOAT));
+    gettimeofday(&start, NULL);
+    simdGemv(Y, A, X, COLUMN, ROW, SIZE);
+    gettimeofday(&end, NULL);
+    double simdtime00 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
+    printftime(simdGemv, simdtime00, Z, Y);
+    checkValue(Z, Y);
 
-    // /// simdGemv01
-    // memset(Y, 0, COLUMN * SIZE * sizeof(FLOAT));
-    // gettimeofday(&start, NULL);
-    // simdGemv01(Y, A, X, COLUMN, ROW, SIZE);
-    // gettimeofday(&end, NULL);
-    // double simdtime01 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
-    // printftime(simdGemv01, simdtime01, Z, Y);
-    // checkValue(Z, Y);
+    /// simdGemv01
+    memset(Y, 0, COLUMN * SIZE * sizeof(FLOAT));
+    gettimeofday(&start, NULL);
+    simdGemv01(Y, A, X, COLUMN, ROW, SIZE);
+    gettimeofday(&end, NULL);
+    double simdtime01 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
+    printftime(simdGemv01, simdtime01, Z, Y);
+    checkValue(Z, Y);
 
     /////////////// Tensor Grid ////////////////
     /// TG_gemv: Tensor grid method 00
