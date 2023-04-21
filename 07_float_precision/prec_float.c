@@ -59,7 +59,7 @@ int main(int argc, char **argv)
             nrm2D += norm2D(A, SIZE * 2) * renomalize;
             gettimeofday(&endD, NULL);
             timeuseD += (endD.tv_sec - startD.tv_sec) * 1000000 + (endD.tv_usec - startD.tv_usec);
-            printf("Norm2 <double> time: %10.5lf, nrm2D=%11.8lf\n", timeuseD, nrm2D);
+            // printf("Norm2 <double> time: %10.5lf, nrm2D=%11.8lf\n", timeuseD, nrm2D);
         }
         {
             float nrm2F = 0.0;
@@ -67,10 +67,12 @@ int main(int argc, char **argv)
             nrm2F += norm2F(AF, SIZE * 2) * renomalize;
             gettimeofday(&endF, NULL);
             timeuseF += (endF.tv_sec - startF.tv_sec) * 1000000 + (endF.tv_usec - startF.tv_usec);
-            printf("Norm2 <single> time: %10.5f us, nrm2F=%11.8f, acc=%6.3lf\n\n", timeuseF, nrm2F,
-                   timeuseD / timeuseF);
+            // printf("Norm2 <single> time: %10.5f us, nrm2F=%11.8f, acc=%6.3lf\n\n", timeuseF, nrm2F,
+            //        timeuseD / timeuseF);
         }
     }
+    printf("Norm2 <double> time: %10.5lf", timeuseD);
+    printf("Norm2 <single> time: %10.5f us, acc=%6.3lf\n\n", timeuseF, timeuseD / timeuseF);
 
     free(A);
     free(AF);
