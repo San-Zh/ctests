@@ -113,6 +113,8 @@ int main(int argc, char **argv)
     double timeref = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
     printftime(gemv, timeref, Z, Z);
 
+#ifdef AVX512
+
     /// simdGemv
     memset(Y, 0, COLUMN * SIZE * sizeof(FLOAT));
     gettimeofday(&start, NULL);
@@ -130,6 +132,8 @@ int main(int argc, char **argv)
     double simdtime01 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
     printftime(simdGemv01, simdtime01, Z, Y);
     checkValue(Z, Y);
+
+#endif
 
     /////////////// Tensor Grid ////////////////
     /// TG_gemv: Tensor grid method 00

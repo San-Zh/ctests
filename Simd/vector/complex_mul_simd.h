@@ -6,52 +6,32 @@
 #include <complex>
 #include <stdio.h>
 
-#define SIMD256
 #define ALIGEN_BTS 32
 
 #ifndef SINGLE_PREC
 #define FLOAT double
+#define EO_SWITCH_256 0b0101
 #else
 #define FLOAT float
+#define EO_SWITCH_256 0b10110001
 #endif
 using Complex = std::complex<FLOAT>;
 
-#ifdef SIMD256
-
+#ifdef __AVX__||__AVX2__
 #if defined SINGLE_PREC
-#define SimdVecF __m256
 #define FSIMD_SIZE 8
-#define EO_SWITCH_256 0b10110001
-#define Fsimd_loadf(maddr) _mm256_load_ps((float *) maddr)
-#define Fsimd_storef(maddr, vecf) _mm256_store_ps((float *) maddr, vecf)
-#define Fsimd_unpacklo(v0, v1) _mm256_unpacklo_ps(v0, v1)
-#define Fsimd_unpackhi(v0, v1) _mm256_unpackhi_ps(v0, v1)
-#define SimdGatherIndex __m256i
-#define Fsimd_i32gather(maddr, m256i, scale) _mm256_i32gather_ps(maddr, m256i, scale)
 #else
-#define EO_SWITCH_256 0b0101
-#define SimdVecF __m256d
 #define FSIMD_SIZE 4
-#define Fsimd_load(maddr) _mm256_load_pd((double *) maddr)
-#define Fsimd_store(maddr, vecf) _mm256_store_pd((double *) maddr, vecf)
-#define Fsimd_unpacklo(v0, v1) _mm256_unpacklo_pd(v0, v1)
-#define Fsimd_unpackhi(v0, v1) _mm256_unpackhi_pd(v0, v1)
-#define SimdGatherIndex __m128i
-#define Fsimd_i32gather(maddr, m128i, scale) _mm256_i32gather_pd(maddr, m128i, scale)
 #endif
 
 #endif
 
-#ifdef SIMD128
-
+#ifdef __SSE__||__SSE2__||__SSE4_2__ 
 #if defined SINGLE_PREC
-#define SimdVecF __mm128
 #define FSIMD_SIZE 4
 #else
-#define SimdVecF __mm128d
 #define FSIMD_SIZE 2
 #endif
-
 #endif
 
 template <typename T>
@@ -92,6 +72,7 @@ static inline void simd_mul_pd(double *zc, const double *za, const double *zb, c
     }
 }
 
+#ifdef AVX512
 /**
  * @brief method 02 rrii gather scatter
  * 
@@ -116,6 +97,8 @@ static inline void simd_mul_pd_rrii(double *zc, double *za, double *zb, const in
         _mm256_i32scatter_pd(zc + i + 1, idxr, abi, 8);
     }
 }
+#endif
+
 /**
  * @brief method 03 rrii load v0, v1;shuffle...
  * 
@@ -185,6 +168,7 @@ void simd_mul_ps(float *cc, const float *ca, const float *cb, const int len)
     }
 }
 
+#ifdef AVX512
 static inline void simd_mul_ps_rrii(float *zc, float *za, float *zb, const int len)
 {
     __m256i idxr = _mm256_set_epi32(0, 2, 4, 6, 8, 10, 12, 14);
@@ -201,7 +185,10 @@ static inline void simd_mul_ps_rrii(float *zc, float *za, float *zb, const int l
         _mm256_i32scatter_ps(zc + i, idxi, abi, 4);
     }
 }
+#endif
 
+#ifdef SINGLE_PREC
+#ifdef AVX512
 static inline void simd_mul_ps_rrii2(float *zc, float *za, float *zb, const int len)
 {
     __m256 v0, v1, ar, ai, br, bi, abr, abi;
@@ -273,6 +260,8 @@ static inline void simd_mul_ps_rrii2(float *zc, float *za, float *zb, const int 
 
     }
 }
+#endif
+#endif
 
 #endif
 

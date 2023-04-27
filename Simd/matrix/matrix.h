@@ -81,6 +81,8 @@ void gemv(T *y, const T *A, const T *x, const int &Col, const int &Row, const in
     }
 }
 
+#ifdef AVX512 
+
 /**
  * @brief Simd Gemv, double or float data in normal order; so i32Gather/Scatter used. [avx512]
  * 
@@ -154,6 +156,8 @@ void simdGemv01(FLOAT *y, FLOAT *A, FLOAT *x, const int &Col, const int &Row, co
         }
     }
 }
+
+#endif
 
 /**
  * @brief Tensor Grid Gemv; normal mul, and grid-loop inside 

@@ -50,11 +50,11 @@ int main(int argc, char **argv)
 
     for (size_t wm = 0; wm < 10; wm++) {
         std_vec_mul(Vc, Va, Vb, SIZE);
-#ifndef SINGLE_PREC
-        simd_mul_pd_rrii(Fd, Fa, Fb, 2 * SIZE);
-#else
-        simd_mul_ps_rrii(Fd, Fa, Fb, 2 * SIZE);
-#endif
+// #ifndef SINGLE_PREC
+//         simd_mul_pd_rrii(Fd, Fa, Fb, 2 * SIZE);
+// #else
+//         simd_mul_ps_rrii(Fd, Fa, Fb, 2 * SIZE);
+// #endif
     }
 
     printf("Time Use(ms): std_complex_vmul  simd_mul_ps/d   cml/simd  resd\n");
@@ -91,6 +91,7 @@ int main(int argc, char **argv)
            timeref / timeuse1, resd(Fc, Fd));
     checkValue(Vc, Vd);
 
+#ifdef AVX512
     /* Simd method 02 */
     gettimeofday(&start, NULL);
 #ifndef SINGLE_PREC
@@ -103,13 +104,14 @@ int main(int argc, char **argv)
     printf("method 02 rrii  : %14.3lf %14.3lf %9.2lf %14.3e\n", timeref, timeuse2,
            timeref / timeuse2, resd(Fc, Fd));
     checkValue(Vc, Vd);
+#endif
 
     /* Simd method 03 */
     gettimeofday(&start, NULL);
 #ifndef SINGLE_PREC
     simd_mul_pd_rrii2(Fd, Fa, Fb, 2 * SIZE);
 #else
-    simd_mul_ps_rrii2(Fd, Fa, Fb, 2 * SIZE);
+    // simd_mul_ps_rrii2(Fd, Fa, Fb, 2 * SIZE);
 #endif
     gettimeofday(&end, NULL);
     double timeuse3 = (end.tv_sec - start.tv_sec) * 1000000 + (end.tv_usec - start.tv_usec);
