@@ -22,25 +22,58 @@ typedef tensor_ptr<double, 3> Vptr3;
 int main(int argc, char **argv)
 {
     int Vsize = 2;
-    T643 A;
-    double B[6][4][3][Vsize];
+
+    double *TensorAry[6][4][3];
     for (int i = 0; i < 6; i++) {
-        for (int j = 0; j < 6; j++) {
-            for (int k = 0; k < 6; k++) {
+        for (int j = 0; j < 4; j++) {
+            for (int k = 0; k < 3; k++) {
+                TensorAry[i][j][k] = new double[Vsize];
                 for (int m = 0; m < Vsize; m++) {
-                    B[i][j][k][m] = i * 1.0e-1 + j * 1.0e-2 + k * 1.0e-3 + m * 1.0e-4;
+                    TensorAry[i][j][k][m] = i * 1.0e-1 + j * 1.0e-2 + k * 1.0e-3 + m * 1.0e-4;
                 }
             }
         }
     }
-    double *C[6][4][3];
 
-    cout << typeid(T643).name() << endl;
+    cout << "\ntypeid(TensorAry),name()  " << endl;
+    cout << "  typeid(TensorAry).name()  " << typeid(TensorAry).name() << endl;
+    cout << "  typeid(TensorAry[0]).name()  " << typeid(TensorAry[0]).name() << endl;
 
-    // A[0][0][0] = C[0][0][0];
+    double VecAry[3][Vsize];
+    for (int k = 0; k < 3; k++) {
+        for (int m = 0; m < Vsize; m++) {
+            VecAry[k][m] = k * 1.0e-3 + m * 1.0e-4;
+        }
+    }
 
-    double M[3][Vsize];
-    Vptr3 V3;
+
+    T643 A;
+    cout << "\ntypeid(T643),name()  " << endl;
+    cout << "  typeid(T643          ),name()  " << typeid(T643).name() << endl;
+    cout << "  typeid(A[0]          ),name()  " << typeid(A[0]).name() << endl;
+    cout << "  typeid(A[0][0]       ),name()  " << typeid(A[0][0]).name() << endl;
+    cout << "  typeid(A[0][0][0]    ),name()  " << typeid(A[0][0][0]).name() << endl;
+    cout << "  typeid(A[0][0][0][0] ),name()  " << typeid(A[0][0][0][0]).name() << endl;
+    // cout << typeid(A).name() << endl;
+    // cout << typeid(A[0]).name() << endl;
+    // cout << typeid(A[0][0]).name() << endl;
+    // cout << typeid(A[0][0][0]).name() << endl;
+
+    Vptr3 V3((Vptr3::PtrType *) VecAry);
+    cout << "\ntypeid(Vptr3),name()" << endl;
+    cout << "  typeid(double        ).name()  " << typeid(double).name() << endl;
+    cout << "  typeid(Vptr3         ).name()  " << typeid(Vptr3).name() << endl;
+    cout << "  typeid(Vptr3::PtrType).name()  " << typeid(Vptr3::PtrType).name() << endl;
+    cout << "  typeid(V3            ).name()  " << typeid(V3).name() << endl;
+    cout << "  typeid(V3[0]         ).name()  " << typeid(V3[0]).name() << endl;
+
+    cout << "V3 values" << endl;
+    for (int k = 0; k < 3; k++) {
+        for (int m = 0; m < Vsize; m++) {
+            printf("  %10.4f", V3[k][m]);
+        }
+        printf("\n");
+    }
 
     return 0;
 }

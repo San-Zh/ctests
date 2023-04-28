@@ -46,5 +46,8 @@ int main(int argc, char **argv)
     strftime(str, 50, "%Y%m%d.%H%M%S  %X", localtime(&now));
     cout << str << endl;
 
+    double pi = 3.141592653 / 10000;
+    printf("pi double %16.8f   sci %16.8e \n", pi,pi);
+
     return 0;
 }

@@ -17,10 +17,18 @@ class tensor_ptr {
   public:
     typedef T *PtrType;
     tensor_ptr() { assert(Ndim >= 0); }
+    tensor_ptr(const PtrType *ov)
+    {
+        assert(Ndim >= 0);
+        for (int i = 0; i < Ndim; i++) {
+            ptr[i] = ov[i];
+        }
+    }
+    tensor_ptr(T **ov, int Nvec) : ptr(ov) { assert(Ndim == Nvec); }
     ~tensor_ptr() {}
 
-    PtrType operator[](int i) { return ptr[i]; }
+    PtrType &operator[](int i) { return this->ptr[i]; }
 
   private:
-    PtrType *ptr[Ndim];
+    PtrType ptr[Ndim];
 };
