@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <array>
 #include "template.h"
 
 using namespace std;
@@ -21,6 +22,7 @@ int main(int argc, char **argv)
     cout << "boundary<y> y_b; y_b.dim() " << b_y.dim() << endl;
     cout << "boundary<z> z_b; z_b.dim() " << b_z.dim() << endl;
     cout << "boundary<t> t_b; t_b.dim() " << b_t.dim() << endl;
+
 
     return 0;
 }

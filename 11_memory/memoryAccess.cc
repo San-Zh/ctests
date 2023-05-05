@@ -22,9 +22,11 @@ int main(int argc, char **argv)
 {
     DataTp *A = (DataTp *) malloc(SIZE * sizeof(DataTp));
     DataTp *B = (DataTp *) malloc(SIZE * sizeof(DataTp));
+    DataTp *C = (DataTp *) malloc(SIZE * sizeof(DataTp));
     size_t *idx = (size_t *) malloc(SIZE * sizeof(size_t));
 
     memset(A, 0, SIZE * sizeof(DataTp));
+    memset(B, 0, SIZE * sizeof(DataTp));
     memset(B, 0, SIZE * sizeof(DataTp));
 
     for (size_t i = 0; i < SIZE; i++) {
@@ -50,16 +52,7 @@ int main(int argc, char **argv)
 
     double time0;
     double time1;
-    {
-        for (size_t i = 0; i < SIZE; i++) {
-            A[i] = invRandMax * (DataTp) rand();
-        }
-        timer(time1, {
-            for (size_t i = 0; i < SIZE; i++) {
-                B[i] = A[idx[i]];
-            }
-        });
-    }
+
     {
         for (size_t i = 0; i < SIZE; i++) {
             A[i] = invRandMax * (DataTp) rand();
@@ -68,6 +61,16 @@ int main(int argc, char **argv)
             for (size_t i = 0; i < SIZE; i++) {
                 int eoidx = (i % 2) * SIZE / 2 + i / 2;
                 B[i] = A[eoidx];
+            }
+        });
+    }
+    {
+        for (size_t i = 0; i < SIZE; i++) {
+            A[i] = invRandMax * (DataTp) rand();
+        }
+        timer(time1, {
+            for (size_t i = 0; i < SIZE; i++) {
+                B[i] = A[idx[i]];
             }
         });
     }

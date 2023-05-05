@@ -32,3 +32,36 @@ class tensor_ptr {
   private:
     PtrType ptr[Ndim];
 };
+
+template <typename T, int N>
+struct tensor_traits {
+    typedef typename T::Type type[N];
+};
+
+// template <typename T, int N>
+template <int N>
+struct tensor_traits<double, N> {
+    typedef double type[N];
+    typedef double *pointer;
+};
+
+// // template <int N>
+// template <typename T, int N>
+// struct tensor_traits<float, N> {
+//     typedef float[N] type;
+// };
+
+// // template <int N>
+// template <typename T, int N>
+//
+//     typedef int[N] type;
+// };
+
+template <typename T, int N>
+class tesnor {
+  public:
+    typedef typename tensor_traits<T, N>::type Type;
+    auto operator[](int n) { return ary[n]; }
+    pointer data(){return static_cast<pointer> ary};
+    Type ary;
+};
