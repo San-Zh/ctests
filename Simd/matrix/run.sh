@@ -4,7 +4,8 @@
 TENSOR='-DCOLUMN=3 -DROW=3'
 PREC='-DSINGLE_PREC'
 # GSIZE='-DSIZE'
-CXXFLAG='-mfma -mavx512vl -Ofast'
+# CXXFLAG='-mfma -mavx512vl -Ofast'
+CXXFLAG='-mfma -mavx -Ofast'
 
 # g++ $CXXFLAG $PREC $TENSOR matrix.cpp -DSIZE=8
 # ./a.out
